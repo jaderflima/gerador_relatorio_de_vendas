@@ -90,7 +90,7 @@ with col2:
 #     st.success("Logo uploaded successfully!")
 
 #input csv
-upload_csv = st.file_uploader("Upload CSV", type="csv")
+uploaded_file = st.file_uploader("Carregue um arquivo CSV", type=["csv"])
 
 st.markdown(""" 
     <style>
@@ -108,10 +108,17 @@ st.markdown("""
     <style>
         """, unsafe_allow_html=True)
 
+if uploaded_file is not None:
+     # Lendo o arquivo CSV
+     df = pd.read_csv(uploaded_file)
+     st.write("Dados carregados com sucesso!")
+     st.dataframe(df)
+else:
+    st.warning("Por favor, carregue um arquivo para continuar.")
+
 botao_analise = st.button("Gerar Análise", type="primary", use_container_width=True)
 
-if upload_csv:
-    st.session_state['upload_csv'] = upload_csv  
-    st.success("csv uploaded successfully!")
+    # st.session_state['upload_csv'] = upload_csv  
+    # st.success("csv uploaded successfully!")
 
 
