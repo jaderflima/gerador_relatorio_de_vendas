@@ -6,25 +6,20 @@ st.set_page_config(page_title="DATANExT", layout="centered" )
 empresa = st.session_state.get('empresa', 'teste')
 
 # logo = st.session_state.get('empresa', 'teste')
-def imagem_base64 (caminho_imagem):
+def imagem_base64(caminho_imagem):
     with open(caminho_imagem, "rb") as img_file:
-        return 
-        base64.b64encode(img_file.read()).decode() 
+        return base64.b64encode(img_file.read()).decode()
 
 caminho_logo = "logo_01.jpeg"
-
 base_logo = imagem_base64(caminho_logo)
 
 st.sidebar.markdown(
     f"""
-    <div style= 'text-align:center>
-    <img src= "data:imagem/jpeg;base64,{base_logo}, width="150">
-
+    <div style='text-align:center'>
+        <img src="data:image/jpeg;base64,{base_logo}" width="150">
     </div>
-    
     """,
     unsafe_allow_html=True
-
 )
 
 #st.title("DataNExT")
