@@ -33,18 +33,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# logo = st.session_state.get('logo', 'teste')
-# empresa = st.session_state.get('empresa', 'teste')
-# st.sidebar.markdown(
-#     f"""
-#     <h1 style= 'text-align: center; color: #12357c'>
-#     {empresa}
-#     </h1>
-#     <img src= {logo} alt= "Company Logo" style="width: 150px;">
-#     """,
-#     unsafe_allow_html=True
-# )
-
 st.sidebar.markdown("## FILTROS")
 
 st.sidebar.markdown("### ✔️Campos da Tabela ")
