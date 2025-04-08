@@ -100,3 +100,6 @@ if uploaded_file is not None and st.checkbox('Mostrar dados brutos'):  # Verific
 
 # Botão para gerar análise
 botao_analise = st.button("Gerar Análise", type="primary", use_container_width=True)  # Botão para executar a análise
+
+#Rodapé
+st.markdown("""<hr><div style= 'text-align: center;font-size: small;'>©Todos os direitos reservados.</div>""", unsafe_allow_html=True)

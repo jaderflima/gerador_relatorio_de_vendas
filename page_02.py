@@ -3,6 +3,19 @@ import base64
 
 st.set_page_config(page_title="DATANExT", layout="centered" )
 
+def imagem_base64(caminho_imagem):
+    with open(caminho_imagem, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+logo_datanext = "logo_azul.jpeg"
+base_logo_DN = imagem_base64(logo_datanext)
+st.markdown(
+    f"<div style= "display: flex; justify-content: space-between; align-items: center;">"
+    <div style= 
+    <img src= "data:image/jpeg;base64,{base_logo_DN}"width="50">
+    </div>", 
+    unsafe_allow_html=True
+)
+
 empresa = st.session_state.get('empresa', 'teste')
 
 # logo = st.session_state.get('empresa', 'teste')
@@ -49,6 +62,7 @@ st.sidebar.markdown("### Ordem dos Eixos")
 
 ordem_eixos = st.sidebar.radio("Selecione uma opção:" ,["Gráfico vendedor", "Gráfico Gerente"])
 
-
-
 upload_csv = st.session_state.get('upload_csv', 'teste')
+
+#Rodapé
+st.markdown("""<hr><div style= 'text-align: center;font-size: small;'>©Todos os direitos reservados.</div>""", unsafe_allow_html=True)
