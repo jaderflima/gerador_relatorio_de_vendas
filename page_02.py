@@ -8,7 +8,7 @@ def imagem_base64(caminho_imagem):
         return base64.b64encode(img_file.read()).decode()
 logo_datanext = "logo_azul.jpeg"
 base_logo_DN = imagem_base64(logo_datanext)
-st.markdown(
+st.sidebar.markdown(
     f"""
     <div style= "display: flex; justify-content: space-between; align-items: center;">
         <div style= "display: flex; align-items: center;">
