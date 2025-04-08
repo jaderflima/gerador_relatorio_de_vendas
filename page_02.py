@@ -9,10 +9,18 @@ def imagem_base64(caminho_imagem):
 logo_datanext = "logo_azul.jpeg"
 base_logo_DN = imagem_base64(logo_datanext)
 st.markdown(
-    f"<div style= "display: flex; justify-content: space-between; align-items: center;">"
-    <div style= 
-    <img src= "data:image/jpeg;base64,{base_logo_DN}"width="50">
-    </div>", 
+    f"""
+    <div style= "display: flex; justify-content: space-between; align-items: center;">
+        <div style= "display: flex; align-items: center;">
+            <img src="data:image/jpeg;base64,{base_logo_DN}" width="50" style="margin-right:10px;">
+            <span style="font-size: 20px"; font-weight: bold; color:#2980b9;">DATANExT</span>
+        </div>
+        <div>
+            <a href= "#" style= "text-decoration: none; color:#2980b9; font-weight: bold;">PDF</a>
+        </div>
+    </div>
+    <hr style="margin-top: 10;">
+    """, 
     unsafe_allow_html=True
 )
 
