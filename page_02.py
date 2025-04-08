@@ -6,43 +6,47 @@ st.set_page_config(page_title="DATANExT", layout="centered" )
 def imagem_base64(caminho_imagem):
     with open(caminho_imagem, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
-logo_datanext = "logo_azul.jpeg"
+logo_datanext = "logo_azul2.png"
 base_logo_DN = imagem_base64(logo_datanext)
 st.sidebar.markdown(
     f"""
-    <div style= "display: flex; justify-content: space-between; align-items: center;">
-        <div style= "display: flex; align-items: center;">
-            <img src="data:image/jpeg;base64,{base_logo_DN}" width="50" style="margin-right:10px;">
-            <span style="font-size: 20px"; font-weight: bold; color:#2980b9;">DATANExT</span>
-        </div>
-        <div>
-            <a href= "#" style= "text-decoration: none; color:#2980b9; font-weight: bold;">PDF</a>
-        </div>
+    <div style="display: flex; align-items: center;">
+        <img src="data:image/png;base64,{base_logo_DN}" width="150" style="margin-right:10px;">
+        <span style="font-size: 20px; font-weight: bold; color:#2980b9;"></span>
     </div>
     <hr style="margin-top: 10;">
-    """, 
-    unsafe_allow_html=True
-)
-
-empresa = st.session_state.get('empresa', 'teste')
-
-# logo = st.session_state.get('empresa', 'teste')
-def imagem_base64(caminho_imagem):
-    with open(caminho_imagem, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
-
-caminho_logo = "logo_01.jpeg"
-base_logo = imagem_base64(caminho_logo)
-
-st.sidebar.markdown(
-    f"""
-    <div style='text-align:center'>
-        <img src="data:image/jpeg;base64,{base_logo}" width="150">
-    </div>
     """,
     unsafe_allow_html=True
 )
 
+st.markdown(
+    """
+    <div style="text-align: right;">
+        <a href="#" style="text-decoration: none; color:#2980b9; font-weight: bold;">PDF</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+empresa = st.session_state.get('empresa', 'teste')
+
+logo = st.session_state.get('empresa', 'teste')
+def imagem_base64(caminho_imagem):
+    with open(caminho_imagem, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+caminho_logo = "logo_01.png"
+base_logo = imagem_base64(caminho_logo)
+
+st.sidebar.markdown(
+    f"""
+    <div style="display: flex; align-items: center;">
+        <img src="data:image/png;base64,{base_logo}" width="150" style="margin-right:10px;">
+        <span style="font-size: 20px; font-weight: bold; color:#2980b9;"></span>
+    </div>
+    <hr style="margin-top: 10;">
+    """,
+    unsafe_allow_html=True
+)
 #st.title("DataNExT")
 st.markdown(
     f"""
