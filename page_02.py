@@ -82,7 +82,7 @@ ordem_eixos = st.sidebar.radio("Selecione uma opção:" ,["Gráfico vendedor", "
 #upload_csv = st.session_state.get('upload_csv', 'teste')#
 
 #gráficos
-csv_caminho = r"Base de dados - base_farmacia_esportiva_3000.csv"
+csv_caminho = r"\\srv04-vm-ad.snadvogados.adv.br\ArqsParticulares2\isabella.nunes\Documents\GitHub\gerador_relatorio_de_vendas\Base de dados - base-farmacia-esportiva-3000.csv"
 
 try:
     data = pd.read_csv(csv_caminho)
