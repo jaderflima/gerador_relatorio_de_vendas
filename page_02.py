@@ -82,29 +82,89 @@ ordem_eixos = st.sidebar.radio("Selecione uma opção:" ,["Gráfico vendedor", "
 #upload_csv = st.session_state.get('upload_csv', 'teste')#
 
 #gráficos
-csv_caminho = r"\\srv04-vm-ad.snadvogados.adv.br\ArqsParticulares2\isabella.nunes\Documents\GitHub\gerador_relatorio_de_vendas\Base de dados - base-farmacia-esportiva-3000.csv"
+csv_caminho = r"C:\Users\Lenovo\Documents\Next\projeto_final\gerador_relatorio_de_vendas\Base de dados - base-farmacia-esportiva-3000.csv"
 
 try:
     data = pd.read_csv(csv_caminho)
     st.success("Dados carregados com sucesso!")
-    st.dataframe(data)
+    #st.dataframe(data)
 
     data['Data_Venda'] = pd.to_datetime(data['Data_Venda'], errors='coerce')
     data['Quantidade_Vendida'] = pd.to_numeric(data['Quantidade_Vendida'], errors='coerce')
     data['Preço_Unitário'] = pd.to_numeric(data['Preço_Unitário'], errors='coerce')
-    data['Valor_Total2'] = data['Quantidade_Vendida'] * data['Preço_Unitário']
+    data['Valor_Total'] = data['Quantidade_Vendida'] * data['Preço_Unitário']
+    #corrigir
+    #data['Categoria_Produto'] = pd.to_pickle(data['Categoria_Produto'], errors='coerce')
+    
     data['AnoMes'] = data['Data_Venda'].dt.to_period('M')
-    vendas_por_mes = data.groupby('AnoMes')['Valor_Total2'].sum()
+    #vendas por mês(grafico1)- barra horizontal
+    vendas_por_mes = data.groupby('AnoMes')['Valor_Total'].sum()
     vendas_por_mes.index = vendas_por_mes.index.astype(str)
-    st.write("###  Total vendido por mês")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    vendas_por_mes.plot(ax=ax)
-    ax.set_title('Total vendido por mês')
-    ax.set_xlabel('Ano-Mês')
-    ax.set_ylabel('Valor Total')
-    ax.grid(True)
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
+    
+    #grafico2 (pizza)
+    vendas_categoria = data.groupby('Categoria_Produto')['Valor_Total'].sum().sort_values(ascending=False)
+    
+    #grafico3(barra vertical)
+    vendas_vendedor = data.groupby('Vendedor')['Valor_Total'].sum().sort_values(ascending=False)
+
+    #grafico4()
+    canal_vendas = data.groupby('Canal_Venda')['Valor_Total'].sum().sort_values(ascending=False)
+
+    col1, col2 = st.columns([0.5, 0.5])
+    with col1:
+        st.write('#### Vendas por Mês')
+        fig1, ax1 = plt.subplots(figsize=(6, 3))
+        vendas_por_mes.plot(kind='barh', ax=ax1)
+        ax1.set_xlabel('Ano-Mês')
+        ax1.set_ylabel('Valor Total')
+        ax1.grid(True)
+        plt.xticks(rotation=0)
+        st.pyplot(fig1)
+
+    with col2:
+        st.write('###### Vendas por Categoria')
+        fig2, ax2 = plt.subplots(figsize=(5, 3))
+        vendas_por_mes.plot(kind='pie', ax=ax2)
+        ax2.set_xlabel('Categoria_Produto')
+        ax2.set_ylabel('Valor Total')
+        ax2.grid(True)
+        plt.xticks(rotation=0)
+        st.pyplot(fig2)    
+
+    col4, col5 = st.columns([0.5, 0.5])
+    with col4:
+        st.write('#### Vendas por Vendedor')
+        fig4, ax4 = plt.subplots(figsize=(6, 3))
+        vendas_por_mes.plot(kind='bar', ax=ax4)
+        ax4.set_xlabel('Vendedor')
+        ax4.set_ylabel('Valor Total')
+        ax4.grid(True)
+        plt.xticks(rotation=0)
+        st.pyplot(fig4)
+
+    with col5:
+        st.write('#### Canal de vendas')
+        fig5, ax5 = plt.subplots(figsize=(6, 3))
+        vendas_por_mes.plot(kind='bar', ax=ax5)
+        ax5.set_xlabel('Canal_Venda')
+        ax5.set_ylabel('Valor Total')
+        ax5.grid(True)
+        plt.xticks(rotation=0)
+        st.pyplot(fig5)    
+
+
+
+
+
+    # st.write("###  Total Vendido por Mês")
+    # fig, ax = plt.subplots(figsize=(11, 5))
+    # vendas_por_mes.plot(kind='bar', ax=ax)
+    # ax.set_title("Total Vendido por Mês")
+    # ax.set_xlabel('Ano-Mês')
+    # ax.set_ylabel('Valor Total')
+    # ax.grid(True)
+    # plt.xticks(rotation=0)
+    # st.pyplot(fig)
 
 except Exception as e:
     st.error(f"Erro ao carregar os dados: {e}")
