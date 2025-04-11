@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-st.set_page_config(page_title="DATANExT", layout="centered" )
+st.set_page_config(page_title="DATANExT", layout="wide" )
 
 def imagem_base64(caminho_imagem):
     with open(caminho_imagem, "rb") as img_file:
@@ -86,7 +86,7 @@ csv_caminho = r"C:\Users\Lenovo\Documents\Next\projeto_final\gerador_relatorio_d
 
 try:
     data = pd.read_csv(csv_caminho)
-    st.success("Dados carregados com sucesso!")
+    st.success("Análise Gerada com Sucesso!")
     #st.dataframe(data)
 
     data['Data_Venda'] = pd.to_datetime(data['Data_Venda'], errors='coerce')
@@ -110,46 +110,92 @@ try:
     #grafico4()
     canal_vendas = data.groupby('Canal_Venda')['Valor_Total'].sum().sort_values(ascending=False)
 
-    col1, col2 = st.columns([0.5, 0.5])
+    col1, col2, col3 = st.columns([0.5, 0.5, 0.3])
     with col1:
         st.write('#### Vendas por Mês')
         fig1, ax1 = plt.subplots(figsize=(6, 3))
-        vendas_por_mes.plot(kind='barh', ax=ax1)
-        ax1.set_xlabel('Ano-Mês')
+        #fig1, ax1 = plt.get_cmap(viridis)
+        vendas_por_mes.plot(kind='barh', ax=ax1, color='#2980b9') #colocar o rotulo dos dados
+        ax1.set_xlabel('Ano / Mês')
         ax1.set_ylabel('Valor Total')
         ax1.grid(True)
         plt.xticks(rotation=0)
+        for container in ax1.containers:
+            ax1.bar_label(container, fmt="%.0f", padding=5, fontsize = 15)
         st.pyplot(fig1)
 
     with col2:
         st.write('###### Vendas por Categoria')
         fig2, ax2 = plt.subplots(figsize=(5, 3))
-        vendas_por_mes.plot(kind='pie', ax=ax2)
-        ax2.set_xlabel('Categoria_Produto')
-        ax2.set_ylabel('Valor Total')
-        ax2.grid(True)
-        plt.xticks(rotation=0)
-        st.pyplot(fig2)    
+        cores = ['#2980b9', '#3498db', '#1f618d', '#2471a3', '#9C27B0']
+
+        vendas_categoria.plot(
+            kind='pie',
+            ax=ax2,
+            colors=cores, 
+            autopct='%1.1f%%',  
+            startangle=90,      
+            legend=False
+        )
+
+        ax2.set_ylabel('')  
+        ax2.set_xlabel('')  
+        ax2.axis('equal')   
+        st.pyplot(fig2)
+
+
+    def borda(title, value):
+        st.markdown(
+        f""" 
+        <div style="
+            border: 2px solid;
+            border-radius: 10px;
+            padding:10px;
+            margin-bottom:8px;
+            background-color: white;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            text-align:center; 
+        ">
+            <h4 style="margin-bottom: 8px; color: #333; font-size:20px;">{title} </h4>
+            <p style="font-size: 25px; font-weight: bold; margin: 0; color: #000;">{value} </p>
+        </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+    with col3:
+        qtd_vendas = data.shape[0]
+        faturamento_total = data['Valor_Total'].sum()
+        ticket_medio = faturamento_total / qtd_vendas if qtd_vendas != 0 else 0
+
+        borda("Quantidade de Vendas", f"{qtd_vendas:,}".replace(",", "."))
+        borda("Faturamento Total", f"R$ {faturamento_total:,.2f}".replace(",", "."))
+        borda("Ticket Médio", f"R$ {ticket_medio:,.2f}".replace(",", ".").replace(".", ","))
 
     col4, col5 = st.columns([0.5, 0.5])
     with col4:
         st.write('#### Vendas por Vendedor')
         fig4, ax4 = plt.subplots(figsize=(6, 3))
-        vendas_por_mes.plot(kind='bar', ax=ax4)
+        vendas_vendedor.plot(kind='line', ax=ax4) #colocar pontos no grafico de linha #colocar o rotulo dos dados
         ax4.set_xlabel('Vendedor')
         ax4.set_ylabel('Valor Total')
-        ax4.grid(True)
+        ax4.grid(False)
         plt.xticks(rotation=0)
+        for container in ax4.containers:
+            ax4.bar_label(container, fmt="%.0f", padding=5, fontsize = 15)
         st.pyplot(fig4)
 
     with col5:
         st.write('#### Canal de vendas')
         fig5, ax5 = plt.subplots(figsize=(6, 3))
-        vendas_por_mes.plot(kind='bar', ax=ax5)
-        ax5.set_xlabel('Canal_Venda')
-        ax5.set_ylabel('Valor Total')
-        ax5.grid(True)
+        canal_vendas.plot(kind='bar', ax=ax5) #colocar o rotulo dos dados
+        ax5.set_xlabel('')
+        ax5.set_ylabel('')
+        ax5.grid(False)
         plt.xticks(rotation=0)
+        for container in ax5.containers:
+            ax5.bar_label(container, fmt="%.0f",  padding=3, fontsize = 9)
         st.pyplot(fig5)    
 
 
