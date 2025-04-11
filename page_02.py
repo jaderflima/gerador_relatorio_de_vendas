@@ -176,14 +176,22 @@ try:
     col4, col5 = st.columns([0.5, 0.5])
     with col4:
         st.write('#### Vendas por Vendedor')
-        fig4, ax4 = plt.subplots(figsize=(6, 3))
-        ax4.plot(vendas_vendedor.index, vendas_vendedor.values, marker='o', linestyle='-', color='#2471a3') #colocar pontos no grafico de linha #colocar o rotulo dos dados
+        fig4, ax4 = plt.subplots(figsize=(6, 3))  
+        ax4.plot(vendas_vendedor.index, vendas_vendedor.values, marker='o', linestyle='-', color='#2471a3')
         ax4.set_xlabel('Vendedor')
         ax4.set_ylabel('Valor Total')
         ax4.grid(False)
-        plt.xticks(rotation=0)
-        for container in ax4.containers:
-            ax4.bar_label(container, fmt="%.0f", padding=5, fontsize = 15)
+        plt.xticks(rotation=0, ha='right', fontsize=6) 
+
+    # Rótulos nos pontos
+        for i, valor in enumerate(vendas_vendedor.values):
+            ax4.annotate(f'{valor:.0f}',
+                     (vendas_vendedor.index[i], vendas_vendedor.values[i]),
+                     textcoords="offset points",
+                     xytext=(0, 8),
+                     ha='center',
+                     fontsize=8)
+
         st.pyplot(fig4)
 
     with col5:
