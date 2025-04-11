@@ -177,7 +177,7 @@ try:
     with col4:
         st.write('#### Vendas por Vendedor')
         fig4, ax4 = plt.subplots(figsize=(6, 3))
-        vendas_vendedor.plot(kind='line', ax=ax4) #colocar pontos no grafico de linha #colocar o rotulo dos dados
+        ax4.plot(vendas_vendedor.index, vendas_vendedor.values, marker='o', linestyle='-', color='#2471a3') #colocar pontos no grafico de linha #colocar o rotulo dos dados
         ax4.set_xlabel('Vendedor')
         ax4.set_ylabel('Valor Total')
         ax4.grid(False)
