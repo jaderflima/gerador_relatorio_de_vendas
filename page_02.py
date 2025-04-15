@@ -7,6 +7,85 @@ import matplotlib.pyplot as plt # Biblioteca para criar gráficos e visualizaç�
 from io import BytesIO # Módulo para manipular fluxos de dados em memória.
 from fpdf import FPDF # Biblioteca utilizada para gerar arquivos PDF. Ideal para criar relatórios.
 
+st.set_page_config(page_title="DATANExT", layout="wide")
+
+st.markdown("""
+<style>
+/* Corrige o fundo e a borda do multiselect */
+section[data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] {
+    background-color: #2980b9 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 2px !important;
+}
+
+/* Corrige cor do texto no placeholder e itens */
+section[data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] * {
+    color: white !important;
+}
+
+/* Corrige o fundo e o texto do item selecionado ("tag") */
+section[data-testid="stSidebar"] .stMultiSelect span[data-baseweb="tag"] {
+    background-color: #2980b9 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+}
+
+/* Corrige a cor do botão "x" do item selecionado */
+section[data-testid="stSidebar"] .stMultiSelect span[data-baseweb="tag"] svg {
+    color: white !important;
+}
+
+/* Corrige o fundo do dropdown */
+section[data-testid="stSidebar"] .stMultiSelect div[role="listbox"] {
+    background-color: #2980b9 !important;
+    color: white !important;
+}
+
+/* Corrige a cor dos itens do dropdown */
+section[data-testid="stSidebar"] .stMultiSelect div[role="option"] {
+    background-color: #2980b9 !important;
+    color: white !important;
+}
+
+    /* Corrige foco e hover */
+    section[data-testid="stSidebar"] .stMultiSelect div[role="option"]:hover {
+    background-color: #2980b9 !important;
+}
+</style>
+""", 
+unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+    /* Linha ativa do slider */
+    div[data-baseweb="slider"] > div > div:nth-child(1) {
+    background: #2980b9 !important;
+    height: 4px !important;
+}
+
+
+    /* Bolinhas (thumbs) */
+    div[data-baseweb="slider"] [role="slider"] {
+    background: #2980b9 !important;
+    border: none !important;
+}
+
+    /* Tooltip acima da bolinha */
+    div[data-baseweb="slider"] [data-testid="stTooltipLabel"] {
+    background: #2980b9 !important;
+    height: 4px !important;
+}
+
+    /* Labels embaixo */
+    div[data-baseweb="slider"] [data-testid="stTickBar"] span {
+    font-weight: bold !important;
+}
+</style>
+""", 
+unsafe_allow_html=True)
+
 def imagem_base64(caminho_imagem):
     import base64
     with open(caminho_imagem, "rb") as img_file:
@@ -122,24 +201,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.sidebar.markdown("## FILTROS")
-
-st.sidebar.markdown("### ✔️Campos da Tabela ")
-
-campos_da_tabela =["Campo 1", "Campo 2","Campo 3", "Campo 4","Campo 5"]
-
-campos_escolhidos = []
-
-for campo in campos_da_tabela:
-    if st.sidebar.checkbox ( f'{campo}', value=False):
-        campos_escolhidos.append(campo)
-
-st.sidebar.markdown("### Ordem dos Eixos")
-
-ordem_eixos = st.sidebar.radio("Selecione uma opção:" ,["Gráfico vendedor", "Gráfico Gerente"])
-
 #Utiliza o arquivo csv upado 
-csv_caminho = "./bd_farmacia.csv"
+csv_caminho = r"C:\Users\Lenovo\Documents\Next\projeto_final\gerador_relatorio_de_vendas\Base_farmacia_manipulada_2024_dashboard.csv"
 
 # Inicializar o DataFrame
 data = None
@@ -157,7 +220,27 @@ try:
     data['Preço_Unitário'] = pd.to_numeric(data['Preço_Unitário'], errors='coerce')
     data['Valor_Total'] = data['Quantidade_Vendida'] * data['Preço_Unitário']
     data['AnoMes'] = data['Data_Venda'].dt.to_period('M')
+    
+    st.sidebar.markdown("#### FILTROS")
 
+    categorias = st.sidebar.multiselect("Categoria do Produto", options=data['Categoria_Produto'].dropna().unique()) #dropna é remover os valores vázios e o unique é remover a duplicidade.
+    if categorias:
+        data = data[data['Categoria_Produto'].isin(categorias)] #isin verifica se todos os itens daquela categoria foram selecionados.
+
+    vendedores = st.sidebar.multiselect("Vendedores", options=data['Vendedor'].dropna().unique()) 
+    if vendedores:
+        data = data[data['Vendedor'].isin(vendedores)] 
+    
+    canal = st.sidebar.multiselect("Canal de Venda", options=data['Canal_Venda'].dropna().unique()) 
+    if canal:
+        data = data[data['Canal_Venda'].isin(canal)] 
+
+    data_minima = data['Data_Venda'].min().date()    
+    data_maxima = data['Data_Venda'].max().date()
+
+    intervalo_data =  st.sidebar.slider("Intervalo de Vendas",min_value=data_minima,max_value=data_maxima,value=(data_minima,data_maxima))
+    data = data[(data['Data_Venda'].dt.date >= intervalo_data[0]) & (data['Data_Venda'].dt.date <=  intervalo_data[1])]
+    
     vendas_por_mes = data.groupby('AnoMes')['Valor_Total'].sum()
     vendas_por_mes.index = vendas_por_mes.index.astype(str)
 
@@ -165,7 +248,7 @@ try:
 
     vendas_vendedor = data.groupby('Vendedor')['Valor_Total'].sum().sort_values(ascending=False)
 
-    canal_vendas = data.groupby('Canal_Venda')['Valor_Total'].sum().sort_values(ascending=False)
+    canal_vendas = data.groupby('Canal_Venda').size().sort_values(ascending=False)
 
     col1, col2, col3 = st.columns([0.5, 0.5, 0.3])
     with col1:
@@ -177,13 +260,14 @@ try:
         ax1.grid(True)
         plt.xticks(rotation=0)
         for container in ax1.containers:
-            ax1.bar_label(container, fmt="%.0f", padding=5, fontsize = 15)
+            rotulo1 = [f'R$ {v:,.2f}'.replace(",","x").replace(".",",").replace("x",".") for v in container.datavalues]
+            ax1.bar_label(container,labels=rotulo1, padding=5, fontsize = 10)
         st.pyplot(fig1)
 
     with col2:
         st.write('###### Vendas por Categoria')
         fig2, ax2 = plt.subplots(figsize=(5, 3))
-        cores = ['#2980b9', '#3498db', '#1f618d', '#2471a3', '#9C27B0']
+        cores = ['#2980b9', '#3498db', '#1f618d', '#2471a3','#12496e','#91c8ed']
 
         vendas_categoria.plot(
             kind='pie',
@@ -235,12 +319,14 @@ try:
         ax4.plot(vendas_vendedor.index, vendas_vendedor.values, marker='o', linestyle='-', color='#2471a3')
         ax4.set_xlabel('Vendedor')
         ax4.set_ylabel('Valor Total')
-        ax4.grid(False)
-        plt.xticks(rotation=0, ha='right', fontsize=6) 
+        ax4.grid(True)
+        plt.xticks(rotation=0, ha='right', fontsize=6)
+        
 
         # Rótulos nos pontos
         for i, valor in enumerate(vendas_vendedor.values):
-            ax4.annotate(f'{valor:.0f}',
+            valor_formatado = f'R$ {valor:,.0f}'.replace(',', '.') 
+            ax4.annotate(valor_formatado,
                      (vendas_vendedor.index[i], vendas_vendedor.values[i]),
                      textcoords="offset points",
                      xytext=(0, 8),
@@ -258,7 +344,7 @@ try:
         ax5.grid(False)
         plt.xticks(rotation=0)
         for container in ax5.containers:
-            ax5.bar_label(container, fmt="%.0f",  padding=3, fontsize = 9)
+            ax5.bar_label(container, fmt="%.0f",  padding=0.8, fontsize = 7)
         st.pyplot(fig5)
 
  # st.write("###  Total Vendido por Mês")

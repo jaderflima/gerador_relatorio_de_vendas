@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Configuração inicial da página (primeiro comando do script)
-st.set_page_config(page_title="DataNext Relatório de Vendas", layout="wide", page_icon="icon_DataNext.png")
+st.set_page_config(page_title="DataNext Relatório de Vendas", layout="centered", page_icon="icon_DataNext.png")
 
 # Uso de colunas para centralizar logo e sub-título
 col1, col2, col3 = st.columns([1, 2, 1])  # Divide a tela em três colunas para centralização
@@ -31,7 +31,7 @@ if logo_url:  # Salva a URL no session_state
 
 # Upload de arquivo
 uploaded_logo = st.file_uploader("Ou faça upload da logomarca", type=["png", "jpg", "jpeg"])
-if uploaded_logo is not None:  # Se o arquivo for enviado
+if uploaded_logo is  not None:  # Se o arquivo for enviado
     # Lê o conteúdo do arquivo
     logo_content = uploaded_logo.getvalue()
     # Salva o conteúdo no session_state
