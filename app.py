@@ -191,33 +191,6 @@ def relatorio_page():
         unsafe_allow_html=True
     )
 
-    if data is not None:
-        pdf_file = gerar_pdf(data.copy(), empresa)
-        pdf_base64 = base64.b64encode(pdf_file.getvalue()).decode('latin1')
-        logo_pdf = "pdf.png"
-        base_logo_pdf = imagem_base64(logo_pdf)
-        st.markdown(
-            f"""
-            <style>
-            .pdf-icon-container {{
-                display: flex;
-                justify-content: flex-end; /* Alinha o ícone à direita */
-                margin-top: 10px;
-            }}
-            .pdf-icon {{
-                width: 40px; /* Tamanho do ícone */
-                cursor: pointer; /* Estilo do cursor ao passar o mouse */
-            }}
-            </style>
-            <div class="pdf-icon-container">
-                <a download="dashboard.pdf" href="data:application/pdf;base64,{pdf_base64}">
-                    <img src="data:image/png;base64,{base_logo_pdf}" class="pdf-icon" alt="PDF Icon">
-                </a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
     if logo:
         if isinstance(logo, bytes):
             st.sidebar.markdown(
